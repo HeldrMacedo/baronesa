@@ -1,0 +1,66 @@
+version: "3.9"
+
+networks:
+  mynet:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 172.25.0.0/16
+
+
+services:
+  www:
+    build: .
+    restart: always
+    container_name: applications_www
+    ports:
+      - '80:80'
+      - "443:443"
+      - "8000:8000"
+    volumes:
+      - ./alpha:/var/www/html
+    links:
+       - mysql:mysql
+    networks:
+        mynet:
+            ipv4_address: 172.25.0.2
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    container_name: applications_db
+    ports:
+        - '3306:3306'
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+    volumes:
+        - db_applications_data:/var/lib/mysql
+    networks:
+        mynet:
+            ipv4_address: 172.25.0.3
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./alpha:/var/www/html
+    links:
+       - mysql:mysql
+    networks:
+        mynet:
+            ipv4_address: 172.25.0.4
+
+  comporser:
+    image: composer:latest
+    container_name: applications_composer
+    volumes:
+      - ./alpha:/var/lib/mysql
+    working_dir: /var/lib/mysql
+    depends_on:
+      - mysql
+      - php
+
+    
+volumes:
+  db_applications_data:
