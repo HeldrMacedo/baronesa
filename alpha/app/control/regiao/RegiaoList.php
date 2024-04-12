@@ -4,6 +4,10 @@ use Adianti\Base\TStandardList;
 use Adianti\Control\TAction;
 use Adianti\Control\TPage;
 use Adianti\Core\AdiantiCoreApplication;
+use Adianti\Database\TCriteria;
+use Adianti\Database\TFilter;
+use Adianti\Database\TRepository;
+use Adianti\Database\TTransaction;
 use Adianti\Registry\TSession;
 use Adianti\Widget\Container\TPanelGroup;
 use Adianti\Widget\Container\TVBox;
@@ -71,7 +75,7 @@ Class RegiaoList extends TStandardList
         $order_nome->setParameter('order', 'nome');
         $column_nome->setAction($order_nome);
 
-        $action_edit = new TDataGridAction(array('SystemRoleForm', 'onEdit'), ['register_state' => 'false']);
+        $action_edit = new TDataGridAction(array('RegiaoForm', 'onEdit'), ['register_state' => 'false']);
         $action_edit->setButtonClass('btn btn-default');
         $action_edit->setLabel(_t('Edit'));
         $action_edit->setImage('far:edit blue');
@@ -106,7 +110,7 @@ Class RegiaoList extends TStandardList
 
         $panel->addHeaderWidget($form_search);
 
-        $panel->addHeaderActionLink('', new TAction(['SystemRoleForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus');
+        $panel->addHeaderActionLink('', new TAction(['RegiaoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus');
         $this->filter_label = $panel->addHeaderActionLink('Filtros', new TAction([$this, 'onShowCurtainFilters']), 'fa:filter');
 
         $dropdown = new TDropDown(_t('Export'), 'fa:list');
@@ -198,6 +202,60 @@ Class RegiaoList extends TStandardList
         catch (Exception $e) 
         {
             new TMessage('error', $e->getMessage());    
+        }
+    }
+
+    public function onReload($param = NULL)
+    {
+        try {
+            TTransaction::open('permission');
+            $data = (array) $this->form->getData();
+            $userId = TSession::getValue('userid');
+            $unit = (object) SystemUser::find($userId)->get_unit();
+
+            $repository = new TRepository('Regiao');
+            $limit = 10;
+
+            $criteria = new TCriteria;
+
+            if (empty($param['order'])) {
+                $param['order'] = 'id';
+                $param['direction'] = 'asc';
+            }
+
+            $criteria->setProperties($param); // order, offset
+            $criteria->setProperty('limit', $limit);
+
+            $criteria->add(new TFilter('unit_id', '=', $unit->id));
+
+            if (!empty($data['nome'])) {
+                $criteria->add(new TFilter('nome', '=', $data['nome']));
+            }
+
+            $objects = $repository->load($criteria);
+
+            $this->datagrid->clear();
+
+            if ($objects) {
+                foreach ($objects as $object) {
+                    $this->datagrid->addItem($object);
+                }
+            }
+
+            $criteria->resetProperties();
+            $count = $repository->count($criteria);
+
+            $this->pageNavigation->setCount($count); // count of records
+            $this->pageNavigation->setProperties($param); // order, page
+            $this->pageNavigation->setLimit($limit); // limit
+
+            TTransaction::close();
+            $this->loaded = true;
+
+            TTransaction::close();
+        } catch (Exception $e) {
+            new TMessage('error', $e->getMessage());
+            TTransaction::rollback();
         }
     }
 }

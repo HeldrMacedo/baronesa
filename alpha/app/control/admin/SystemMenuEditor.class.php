@@ -314,3 +314,5 @@ class SystemMenuEditor extends TPage
         return explode('_', $key)[0];
     }
 }
+
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);

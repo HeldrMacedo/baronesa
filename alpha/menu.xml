@@ -3,6 +3,19 @@
             <icon>fas:map fa-map</icon>
             <action>RegiaoList</action>
     </menuitem>
+    <menuitem label='Usuários'>
+        <icon>fas:user fa-users</icon>
+        <menu>
+            <menuitem label='Gerentes'>
+                <icon>fas:user fa-user-tie</icon>
+                <action>GerenteList</action>
+            </menuitem>
+            <menuitem label='Cambistas'>
+                <icon>fas:user fa-user-tie</icon>
+                <action>CambistaList</action>
+            </menuitem>
+        </menu>
+    </menuitem>
     <menuitem label='_t{Administration}'>
         <icon>fas:home fa-fw</icon>
         <menu>
