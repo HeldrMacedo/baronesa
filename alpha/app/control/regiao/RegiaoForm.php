@@ -23,9 +23,8 @@ class RegiaoForm extends TStandardForm
 
         $this->setDatabase('permission');
         $this->setActiveRecord('Regiao');
-        $this->setAfterSaveAction( new TAction(['RegiaoList', 'onReload']) );
 
-        $this->form = new BootstrapFormBuilder('form_regiao');
+        $this->form = new BootstrapFormBuilder('form_RegiaoForm');
         $this->form->setFormTitle('Região');
         $this->form->enableClientValidation();
 
@@ -82,7 +81,8 @@ class RegiaoForm extends TStandardForm
             TForm::sendData('form_RegiaoForm', $data);            
 
             TTransaction::close(); 
-            new TMessage('info', _t('Record saved')); 
+            $pos_action = new TAction(['RegiaoList', 'onReload']);
+            new TMessage('info', _t('Record saved'), $pos_action); 
         }catch (Exception $e) 
         {
             new TMessage('error', $e->getMessage());

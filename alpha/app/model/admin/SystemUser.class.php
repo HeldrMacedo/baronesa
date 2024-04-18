@@ -19,6 +19,7 @@ class SystemUser extends TRecord
     
     private $frontpage;
     private $unit;
+    private $regiao;
     private $system_user_groups = [];
     private $system_user_programs = [];
     private $system_user_units = [];
@@ -47,7 +48,86 @@ class SystemUser extends TRecord
         parent::addAttribute('custom_code');
         parent::addAttribute('otp_secret');
     }
-    
+
+    public function editUserGerete(Regiao $regiao)
+    {
+        $userGerente = $this->getUserGerenteForUser();        
+
+        $object = new Gerente($userGerente->id);
+        $object->regiao_id = $regiao->id;
+        $object->nome = $this->name;
+        $object->store();
+    }
+
+    public function getUserGerenteForUser()
+    {
+       return Gerente::where('user_id', '=', $this->id)->first();
+    }
+
+    public function addUserGerente(Regiao $regiao)
+    {
+        
+        $object = new Gerente();
+        $object->nome       = $this->name;
+        $object->regiao_id  = $regiao->id;
+        $object->user_id    = $this->id;
+        $object->unit_id    = $this->system_unit_id;
+        $object->store();
+    }
+
+    public function get_regiaoGerente()
+    {
+        if (empty($this->regiao)) {
+            $userRegiao = Gerente::where('user_id', '=', $this->id)->first();
+            if (!empty($userRegiao->id)) {
+                $this->regiao = new Regiao($userRegiao->regiao_id);
+            }
+        }
+
+        return $this->regiao;
+    }
+
+    public function getUserCambistaForUser()
+    {
+        return Cambista::where('usuario_id', '=', $this->id)->first();
+    }
+
+    public function editUserCambista(Regiao $regiao, $data)
+    {
+        $userCambista = $this->getUserCambistaForUser();
+
+        $object = new Cambista($userCambista->id);
+        $object->nome                   = $this->name;
+        $object->gerente_id             = $data->gerente_id;
+        $object->comissao               = $data->comissao;
+        $object->pode_cancelar          = $data->pode_cancelar;
+        $object->pode_cancelar_tempo    = $data->pode_cancelar_tempo;
+        $object->limite_venda           = $data->limite_venda;
+        $object->exibe_comissao         = $data->exibe_comissao;
+        $object->pode_reimprimir        = $data->pode_reimprimir;
+        $object->regiao_id              = $regiao->id;
+        $object->usuario_id             = $this->id;
+        $object->unit_id                = $this->system_unit_id;
+        $object->store();
+
+    }
+
+    public function addUserCambista(Regiao $regiao, $data)
+    {
+        $object = new Cambista();
+        $object->nome                   = $this->name;
+        $object->gerente_id             = $data->gerente_id;
+        $object->comissao               = $data->comissao;
+        $object->pode_cancelar          = $data->pode_cancelar;
+        $object->pode_cancelar_tempo    = $data->pode_cancelar_tempo;
+        $object->limite_venda           = $data->limite_venda;
+        $object->exibe_comissao         = $data->exibe_comissao;
+        $object->pode_reimprimir        = $data->pode_reimprimir;
+        $object->regiao_id              = $regiao->id;
+        $object->usuario_id             = $this->id;
+        $object->unit_id                = $this->system_unit_id;
+        $object->store();
+    }
     /**
      * Returns the phone trimmed
      */

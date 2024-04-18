@@ -58,6 +58,8 @@ RewriteRule ^xhr-system-user-edit$ engine.php?class=SystemUserForm&method=onEdit
 RewriteRule ^xhr-system-user-ondelete$ engine.php?class=SystemUserList&method=onDelete&%{QUERY_STRING} [NC]
 RewriteRule ^xhr-system-user-delete$ engine.php?class=SystemUserList&method=Delete&%{QUERY_STRING} [NC]
 
+RewriteRule ^xhr-system-user-list$ engine.php?class=GerenteList&method=onReload&%{QUERY_STRING} [NC]
+RewriteRule ^xhr-system-user-edit$ engine.php?class=GerenteForm&method=onEdit&%{QUERY_STRING} [NC]
 
 RewriteRule ^system-database-explorer$ index.php?class=SystemDatabaseExplorer&%{QUERY_STRING} [NC]
 RewriteRule ^xhr-system-database-explorer$ engine.php?class=SystemDatabaseExplorer&%{QUERY_STRING} [NC]
