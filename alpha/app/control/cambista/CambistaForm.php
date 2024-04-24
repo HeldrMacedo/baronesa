@@ -117,7 +117,7 @@ class CambistaForm extends TPage
         $this->form->addFields([new TLabel('Limite venda <span style="color:red">*</span>')], [$limite_venda], [new TLabel('Exibe comissão <span style="color:red">*</span>')], [$exibe_comissao]);
         $this->form->addFields([new TLabel('Pode reimprimir <span style="color:red">*</span>')], [$pode_reimprimir]);
 
-        $this->form->addHeaderActionLink(_t('Close'), new TAction([$this, 'onClose']), 'fa:times red');
+        //$this->form->addHeaderActionLink(_t('Close'), new TAction([$this, 'onClose']), 'fa:times red');
 
         $container = new TVBox();
         $container->style = 'width: 100%';

@@ -110,7 +110,7 @@ Class RegiaoList extends TStandardList
 
         $panel->addHeaderWidget($form_search);
 
-        $panel->addHeaderActionLink('', new TAction(['RegiaoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus');
+        $panel->addHeaderActionLink(_t('New'), new TAction(['RegiaoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
         $this->filter_label = $panel->addHeaderActionLink('Filtros', new TAction([$this, 'onShowCurtainFilters']), 'fa:filter');
 
         $dropdown = new TDropDown(_t('Export'), 'fa:list');

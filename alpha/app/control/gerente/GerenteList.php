@@ -217,7 +217,7 @@ class GerenteList extends TStandardList
         
         $panel->addHeaderWidget($form_search);
         
-        $panel->addHeaderActionLink('', new TAction(['GerenteForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus');
+        $panel->addHeaderActionLink(_t('New'), new TAction(['GerenteForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
         $this->filter_label = $panel->addHeaderActionLink('Filtros', new TAction([$this, 'onShowCurtainFilters']), 'fa:filter');
         
         // header actions

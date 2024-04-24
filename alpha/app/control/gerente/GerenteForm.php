@@ -30,7 +30,7 @@ class GerenteForm extends TPage
     {
         parent::__construct();
 
-        parent::setTargetContainer('adianti_right_panel');
+        //parent::setTargetContainer('adianti_right_panel');
 
         $this->form = new BootstrapFormBuilder('form_Gerente_user');
         $this->form->setFormTitle('Gerente');
@@ -65,7 +65,8 @@ class GerenteForm extends TPage
         $btn = $this->form->addAction( _t('Save'), new TAction(array($this, 'onSave')), 'far:save');
         $btn->class = 'btn btn-sm btn-primary';
         $this->form->addActionLink( _t('Clear'), new TAction(array($this, 'onEdit')), 'fa:eraser red');
-        
+        $this->form->addActionLink(_t('Back'), new TAction(array('GerenteList','onReload')), 'far:arrow-alt-circle-left blue');
+
         $phone->setMask('(99) 9 9999-9999');
 
         $combo_items = [];
@@ -99,11 +100,11 @@ class GerenteForm extends TPage
         $this->form->addFields( [new TLabel('ID')], [$id],  [new TLabel('Name <span style="color:red">*</span>')], [$name] );
         $this->form->addFields( [new TLabel('Login <span style="color:red">*</span>')], [$login],  [new TLabel(_t('Email'))], [$email] );
         $this->form->addFields( [new TLabel(_t('Address'))], [$address],  [new TLabel(_t('Phone'))], [$phone] );
-        $this->form->addFields( [new TLabel(_t('Function'))], [$function_name],  [new TLabel('Região')], [$regiao_id] );
+        $this->form->addFields( [new TLabel(_t('Function'))], [$function_name],  [new TLabel('Região <span style="color:red">*</span>')], [$regiao_id] );
         $this->form->addFields( [new TLabel(_t('Main unit'))], [$unit_id],  [new TLabel(_t('Front page'))], [$frontpage_id] );
         $this->form->addFields( [new TLabel('Senha <span style="color:red">*</span>')], [$password],  [new TLabel('Confirma senha <span style="color:red">*</span>')], [$repassword] ); 
 
-        $this->form->addHeaderActionLink(_t('Close'), new TAction([$this, 'onClose']), 'fa:times red');
+        //$this->form->addHeaderActionLink(_t('Close'), new TAction([$this, 'onClose']), 'fa:times red');
         
         $container = new TVBox;
         $container->style = 'width: 100%';
