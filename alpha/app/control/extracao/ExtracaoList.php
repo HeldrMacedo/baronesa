@@ -4,10 +4,6 @@ use Adianti\Base\TStandardList;
 use Adianti\Control\TAction;
 use Adianti\Control\TPage;
 use Adianti\Core\AdiantiCoreApplication;
-use Adianti\Database\TCriteria;
-use Adianti\Database\TFilter;
-use Adianti\Database\TRepository;
-use Adianti\Database\TTransaction;
 use Adianti\Registry\TSession;
 use Adianti\Widget\Container\TPanelGroup;
 use Adianti\Widget\Container\TVBox;
@@ -25,7 +21,7 @@ use Adianti\Widget\Util\TXMLBreadCrumb;
 use Adianti\Wrapper\BootstrapDatagridWrapper;
 use Adianti\Wrapper\BootstrapFormBuilder;
 
-Class RegiaoList extends TStandardList
+Class ExtracaoList extends TStandardList
 {
     protected $form;
     protected $datagrid;
@@ -34,48 +30,62 @@ Class RegiaoList extends TStandardList
     public function __construct()
     {
         parent::__construct();
-        
+
         parent::setDatabase('permission');
-        parent::setActiveRecord('Regiao');
-        parent::setDefaultOrder('nome', 'asc');
+        parent::setActiveRecord('Extracao');
+        parent::setDefaultOrder('descricao', 'asc');
         parent::addFilterField('id', '=', 'id');
-        parent::addFilterField('nome', 'like', 'nome');
+        parent::addFilterField('descricao', 'like', 'descricao');
         parent::setLimit(TSession::getValue(__CLASS__ . '_limit') ?? 10);
-        
-        // creates the form
-        $this->form = new BootstrapFormBuilder('form_search_Regiao_List');
-        $this->form->setFormTitle('Região');
-        
-        // create the form fields
-        $id = new TEntry('id');
-        $nome = new TEntry('nome');
 
-        // add the fields   
-        $this->form->addFields( [new TLabel('Id')], [$id] );  
-        $this->form->addFields([new TLabel('Nome')], [$nome]);
-        
-        $id->setSize('30%');
-        $nome->setSize('100%');
+        $this->form = new BootstrapFormBuilder('form_search_Extracao_List');
+        $this->form->setFormTitle('Extração');
 
-        $this->form->setData(TSession::getValue('RegiaoList_filter_data'));
+        $descricao = new TEntry('descricao');
+
+        $this->form->addFields([new TLabel('Descrição')], [$descricao]);
+
+        $descricao->setSize('100%');
+
+        $this->form->setData(TSession::getValue('ExtracaoList_filter_data'));
 
         $btn = $this->form->addAction(_t('Find'), new TAction(array($this, 'onSearch')), 'fa:search');
         $btn->class = 'btn btn-sm btn-primary';
 
-        $this->datagrid = new BootstrapDatagridWrapper(new TDataGrid);
+        $this->datagrid =new BootstrapDatagridWrapper(new TDataGrid);
 
         $this->datagrid->style = 'width: 100%';
         $this->datagrid->setHeight(320);
 
-        $column_nome = new TDataGridColumn('nome', 'Nome', 'left');
+        $column_descricao           = new TDataGridColumn('descricao', 'Descrição', 'left');
+        $column_hora_limite         = new TDataGridColumn('hora_limite', 'Hora Limite', 'left');
+        $column_premiacao_maxima    = new TDataGridColumn('premiacao_maxima', 'Premiacao Maxima', 'left');
+        $column_segunda             = new TDataGridColumn('segunda', 'Segunda', 'left');
+        $column_terca               = new TDataGridColumn('terca', 'Terça', 'left');
+        $column_quarta              = new TDataGridColumn('quarta', 'Quarta', 'left');
+        $column_quinta              = new TDataGridColumn('quinta', 'Quinta', 'left');
+        $column_sexta               = new TDataGridColumn('sexta', 'Sexta', 'left');
+        $column_sabado              = new TDataGridColumn('sabado', 'Sábado', 'left');
+        $column_domingo             = new TDataGridColumn('domingo', 'Domingo', 'left');
+        $column_ativo               = new TDataGridColumn('ativo', 'Ativo', 'left');
 
-        $this->datagrid->addColumn($column_nome);
+        $this->datagrid->addColumn($column_descricao);
+        $this->datagrid->addColumn($column_hora_limite);
+        $this->datagrid->addColumn($column_premiacao_maxima);
+        $this->datagrid->addColumn($column_segunda);
+        $this->datagrid->addColumn($column_terca);
+        $this->datagrid->addColumn($column_quarta);
+        $this->datagrid->addColumn($column_quinta);
+        $this->datagrid->addColumn($column_sexta);
+        $this->datagrid->addColumn($column_sabado);
+        $this->datagrid->addColumn($column_domingo);
+        $this->datagrid->addColumn($column_ativo);
 
-        $order_nome = new TAction(array($this, 'onReload'));
-        $order_nome->setParameter('order', 'nome');
-        $column_nome->setAction($order_nome);
+        $order_descricao = new TAction(array($this, 'onReload'));
+        $order_descricao->setParameter('order', 'descricao');
+        $column_descricao->setAction($order_descricao);
 
-        $action_edit = new TDataGridAction(array('RegiaoForm', 'onEdit'), ['register_state' => 'false']);
+        $action_edit = new TDataGridAction(array('ExtracaoForm', 'onEdit'), ['register_state' => 'false']);
         $action_edit->setButtonClass('btn btn-default');
         $action_edit->setLabel(_t('Edit'));
         $action_edit->setImage('far:edit blue');
@@ -97,20 +107,20 @@ Class RegiaoList extends TStandardList
         $this->pageNavigation->setWidth($this->datagrid->getWidth());
 
         $panel = new TPanelGroup();
-        $panel->add($this->datagrid);
+        $panel->add($this->datagrid)->style = 'overflow-x:auto';;
         $panel->addFooter($this->pageNavigation);
 
         $btnf = TButton::create('find', [$this, 'onSearch'], '', 'fa:search');
         $btnf->style= 'height: 37px; margin-right:4px;';
 
-        $form_search = new TForm('form_search_nome');
+        $form_search = new TForm('form_search_descricao');
         $form_search->style = 'float:left;display:flex';
-        $form_search->add($nome, true);
+        $form_search->add($descricao, true);
         $form_search->add($btnf, true);
 
         $panel->addHeaderWidget($form_search);
 
-        $panel->addHeaderActionLink(_t('New'), new TAction(['RegiaoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
+        $panel->addHeaderActionLink(_t('New'), new TAction(['ExtracaoForm', 'onEdit'], ['register_state' => 'false']), 'fa:plus green');
         $this->filter_label = $panel->addHeaderActionLink('Filtros', new TAction([$this, 'onShowCurtainFilters']), 'fa:filter');
 
         $dropdown = new TDropDown(_t('Export'), 'fa:list');
@@ -164,8 +174,8 @@ Class RegiaoList extends TStandardList
         if (!empty(TSession::getValue(get_class($this).'_filter_data')))
         {
             $obj = new stdClass;
-            $obj->name = TSession::getValue(get_class($this).'_filter_data')->nome;
-            TForm::sendData('form_search_nome', $obj);
+            $obj->descricao = TSession::getValue(get_class($this).'_filter_data')->descricao;
+            TForm::sendData('form_search_descricao', $obj);
         }
     }
 
@@ -202,60 +212,6 @@ Class RegiaoList extends TStandardList
         catch (Exception $e) 
         {
             new TMessage('error', $e->getMessage());    
-        }
-    }
-
-    public function onReload($param = NULL)
-    {
-        try {
-            TTransaction::open('permission');
-            $data = (array) $this->form->getData();
-            $userId = TSession::getValue('userid');
-            $unit = (object) SystemUser::find($userId)->get_unit();
-
-            $repository = new TRepository('Regiao');
-            $limit = 10;
-
-            $criteria = new TCriteria;
-
-            if (empty($param['order'])) {
-                $param['order'] = 'id';
-                $param['direction'] = 'asc';
-            }
-
-            $criteria->setProperties($param); // order, offset
-            $criteria->setProperty('limit', $limit);
-
-            $criteria->add(new TFilter('unit_id', '=', $unit->id));
-
-            if (!empty($data['nome'])) {
-                $criteria->add(new TFilter('nome', '=', $data['nome']));
-            }
-
-            $objects = $repository->load($criteria);
-
-            $this->datagrid->clear();
-
-            if ($objects) {
-                foreach ($objects as $object) {
-                    $this->datagrid->addItem($object);
-                }
-            }
-
-            $criteria->resetProperties();
-            $count = $repository->count($criteria);
-
-            $this->pageNavigation->setCount($count); // count of records
-            $this->pageNavigation->setProperties($param); // order, page
-            $this->pageNavigation->setLimit($limit); // limit
-
-            TTransaction::close();
-            $this->loaded = true;
-
-            TTransaction::close();
-        } catch (Exception $e) {
-            new TMessage('error', $e->getMessage());
-            TTransaction::rollback();
         }
     }
 }

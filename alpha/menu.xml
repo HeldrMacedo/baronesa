@@ -16,6 +16,10 @@
             </menuitem>
         </menu>
     </menuitem>
+    <menuitem label='Extração'>
+        <icon>fas:map fa-map</icon>
+        <action>ExtracaoList</action>
+    </menuitem>
     <menuitem label='_t{Administration}'>
         <icon>fas:home fa-fw</icon>
         <menu>

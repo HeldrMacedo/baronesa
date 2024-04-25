@@ -45,3 +45,23 @@ CREATE TABLE IF NOT EXISTS `cambistas` (
   CONSTRAINT `FK_comissao_unit_id` FOREIGN KEY (`unit_id`) REFERENCES `system_unit` (`id`),
   CONSTRAINT `FK_comissao_usuario_if` FOREIGN KEY (`usuario_id`) REFERENCES `system_users` (`id`)
 ); 
+
+CREATE TABLE IF NOT EXISTS `extracoes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descricao` varchar(100) NOT NULL,
+  `abreviacao` varchar(10) DEFAULT NULL,
+  `hora_limite` time NOT NULL,
+  `segunda` char(1) DEFAULT 'N',
+  `terca` char(1) DEFAULT 'N',
+  `quarta` char(1) DEFAULT 'N',
+  `quinta` char(1) DEFAULT 'N',
+  `sexta` char(1) DEFAULT 'N',
+  `sabado` char(1) DEFAULT 'N',
+  `domingo` char(1) DEFAULT 'N',
+  `premiacao_maxima` int NOT NULL,
+  `ultimo_sorteio_numero` int ,
+  `ativo` char(1) DEFAULT 'S',
+  `data_primeiro_sorteio` date DEFAULT NULL,
+  `limite_palpite` decimal(15,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ;

@@ -170,9 +170,7 @@ class CambistaList extends TStandardList
 
         $script = new TElement('script');
         $script->type = 'text/javascript';
-        $javascript = '
-
-        ';
+        $javascript = '';
 
         
         $panel->addHeaderWidget($form_search);
